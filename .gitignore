@@ -1,0 +1,9 @@
+# Ignore all exe files
+**/*.exe
+**/*.txt
+
+# Ignore specific directories
+node_modules/
+bin/
+obj/
+.vscode/
