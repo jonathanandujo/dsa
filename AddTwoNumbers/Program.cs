@@ -25,8 +25,8 @@ namespace BinaryTreeAverage
                     else
                         l1.next = new ListNode(1);
                 }
-                l1=(l1 != null ? l1.next : null);
-                l2=(l2 != null ? l2.next : null);
+                l1 = l1 != null ? l1.next : null;
+                l2 = l2 != null ? l2.next : null;
                 result.next = AddTwoNumbers(l1,l2);
             }
             return result;
