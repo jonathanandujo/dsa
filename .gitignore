@@ -1,5 +1,6 @@
-# Ignore all exe files
+# Ignore all extensions
 **/*.exe
+**/*.sln
 **/*.txt
 
 # Ignore specific directories
