@@ -5,10 +5,24 @@
 Console.WriteLine("Hello, World!");
 var D = new int[] { 10, 8, 9, 11, 7 };
 var R = new int[] { 8, 8, 10, 7, 9 };
-//                [  7, 7, 7,  7, 9]
 
 Console.WriteLine(MinCost(D, R));
 Console.WriteLine(MinCostCopilot(D, R));
+Console.WriteLine(MinCostLC(D, R));
+
+D = new int[] { 10, 50, 19, 11, 7, 10 };
+R = new int[] { 18, 28, 10, 47, 9, 10 };
+
+Console.WriteLine(MinCost(D, R));
+Console.WriteLine(MinCostCopilot(D, R));
+Console.WriteLine(MinCostLC(D, R));
+
+D = new int[] { 10, 50, 19, 11, 7, 1 };
+R = new int[] { 18, 28, 10, 47, 9, 1 };
+
+Console.WriteLine(MinCost(D, R));
+Console.WriteLine(MinCostCopilot(D, R));
+Console.WriteLine(MinCostLC(D, R));
 
 static int MinCostCopilot(int[] D, int[] R)
 {
@@ -52,6 +66,23 @@ static int MinCost(int[] D, int[] R)
     for (int i = 0; i < D.Length; i++)
     {
         minCost = Math.Min(D[i] + minReturnCost[i], minCost);
+    }
+
+    return minCost;
+}
+
+static int MinCostLC(int[] D, int[] R)
+{
+    if (D.Length <= 1 || R.Length <= 1)
+        return -1;
+
+    int minSofar = R[^1];
+    int minCost = int.MaxValue;
+    for(int i = 2; i <= D.Length; i++)
+    {
+        int cost = D[^i] + minSofar;
+        minCost = Math.Min(minCost, cost);
+        minSofar = Math.Min(minSofar, R[^i]);
     }
 
     return minCost;
