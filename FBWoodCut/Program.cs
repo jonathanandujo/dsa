@@ -34,6 +34,7 @@ class Program
     {
         long loops = 0;
         int low = 1, high = wood.Max();
+        bool found = false;
         while (low < high)
         {
             int mid = (low + high + 1) / 2;
@@ -51,11 +52,12 @@ class Program
             }
             else
             {
+                found = true;
                 low = mid;
             }
         }
         Console.WriteLine($"Loops: {loops}");
-        return low;
+        return found ? low : 0;
     }
 
     static int MaxLenCopilot(int[] wood, int k)

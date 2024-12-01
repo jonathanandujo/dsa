@@ -7,6 +7,11 @@ Console.WriteLine(RemoveAllAdjacentDuplicated("AAAABBBAC")); // AC
 Console.WriteLine(RemoveAllAdjacentDuplicated("aaabbc")); // c
 Console.WriteLine(RemoveAllAdjacentDuplicated("abbbac")); // c
 
+Console.WriteLine(RemoveAllAdjacentDuplicatesCopilot("abacaba")); // abacaba
+Console.WriteLine(RemoveAllAdjacentDuplicatesCopilot("AAAABBBAC")); // AC
+Console.WriteLine(RemoveAllAdjacentDuplicatesCopilot("aaabbc")); // c
+Console.WriteLine(RemoveAllAdjacentDuplicatesCopilot("abbbac")); // c
+
 static string RemoveAllAdjacentDuplicated(string s)
 {
     if (string.IsNullOrEmpty(s))
@@ -27,3 +32,28 @@ static string RemoveAllAdjacentDuplicated(string s)
 
     return result.ToString();
 }
+
+static string RemoveAllAdjacentDuplicatesCopilot(string s)
+{
+    if (string.IsNullOrEmpty(s))
+        return s;
+
+    Stack<char> stack = new();
+    foreach (char c in s)
+    {
+        if (stack.Count > 0 && stack.Peek() == c)
+        {
+            stack.Pop();
+        }
+        else
+        {
+            stack.Push(c);
+        }
+    }
+
+    // Construct the result from the stack
+    char[] resultArray = stack.ToArray();
+    Array.Reverse(resultArray);
+    return new string(resultArray);
+}
+
