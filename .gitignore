@@ -8,3 +8,5 @@ node_modules/
 bin/
 obj/
 .vscode/
+.clj-kondo/
+.lsp/
