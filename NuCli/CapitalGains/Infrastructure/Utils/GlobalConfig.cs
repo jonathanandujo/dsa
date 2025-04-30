@@ -2,6 +2,7 @@ namespace Infrastructure.Utils;
 
 public static class GlobalConfig
 {
-    public static readonly decimal TaxRate = 0.2m;
-    public static readonly int MinTaxableAmount = 20000;
+    public const decimal TaxRate = 0.2m;
+    public const int MinTaxableAmount = 20000;
+    public static bool Debug = false;
 }

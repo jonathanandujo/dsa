@@ -4,6 +4,9 @@ class Program
 {
     public static void Main(string[] args)
     {
+        //If users enable debugging, it will show messages on console.
+        if(args.Contains("-debug"))
+            GlobalConfig.Debug = true;
         StockTaxService stockTaxService = new();
 
         // Manual input mode line by line

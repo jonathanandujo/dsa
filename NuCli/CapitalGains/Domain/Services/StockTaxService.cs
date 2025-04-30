@@ -15,9 +15,17 @@ public class StockTaxService
 
         TaxCalculatorAdapter taxCalculatorService = new();
 
-        var results = taxCalculatorService.CalculateTaxes(stockOperations);
+        try
+        {
+            var results = taxCalculatorService.CalculateTaxes(stockOperations);
 
-        if (results != null)
-            ConsoleHelper.WriteSuccess(JsonSerializer.Serialize(results));
+            if (results != null)
+                ConsoleHelper.WriteSuccess(JsonSerializer.Serialize(results));
+        }
+        catch(Exception ex)
+        {
+            if(GlobalConfig.Debug)
+                ConsoleHelper.WriteInfo($"{ex}");
+        }
     }
 }

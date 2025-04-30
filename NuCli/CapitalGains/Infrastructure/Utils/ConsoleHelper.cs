@@ -18,6 +18,7 @@ public static class ConsoleHelper
         Console.ResetColor();
     }
 
+    //Used for debugging
     public static void WriteInfo(string message)
     {
         Console.ForegroundColor = ConsoleColor.Blue;
