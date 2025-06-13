@@ -1,0 +1,14 @@
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    environment:
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_BROKER_ID: 1
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1  # Set replication factor to 1
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"  # Generate using `kafka-storage random-uuid`
+    ports:
+      - "9092:9092"
+      - "9093:9093"
