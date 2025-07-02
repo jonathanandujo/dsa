@@ -1,0 +1,54 @@
+@MicrosoftOrleans_HostAddress = http://localhost:5066
+
+### Get Weather Forecast (Original API)
+GET {{MicrosoftOrleans_HostAddress}}/weatherforecast
+Accept: application/json
+
+### 1. Get Counter Value
+GET {{MicrosoftOrleans_HostAddress}}/counter/jon
+Accept: application/json
+
+### 2. Increment Counter by 1 (default)
+POST {{MicrosoftOrleans_HostAddress}}/counter/jon/increment
+Content-Type: application/json
+
+### 3. Increment Counter by specific amount
+POST {{MicrosoftOrleans_HostAddress}}/counter/jon/increment?amount=5
+Content-Type: application/json
+
+### 4. Decrement Counter by 1 (default)
+POST {{MicrosoftOrleans_HostAddress}}/counter/jon/decrement
+Content-Type: application/json
+
+### 5. Decrement Counter by specific amount
+POST {{MicrosoftOrleans_HostAddress}}/counter/jon/decrement?amount=3
+Content-Type: application/json
+
+### 6. Get Counter Full State
+GET {{MicrosoftOrleans_HostAddress}}/counter/jon/state
+Accept: application/json
+
+### 7. Reset Counter
+POST {{MicrosoftOrleans_HostAddress}}/counter/jon/reset
+Content-Type: application/json
+
+### 8. Test Different Counter (user123)
+POST {{MicrosoftOrleans_HostAddress}}/counter/user123/increment?amount=10
+Content-Type: application/json
+
+### 9. Get Different Counter
+GET {{MicrosoftOrleans_HostAddress}}/counter/user123
+Accept: application/json
+
+### 10. Test Session Counter
+POST {{MicrosoftOrleans_HostAddress}}/counter/session456/increment?amount=2
+Content-Type: application/json
+
+### 11. Get Session Counter State
+GET {{MicrosoftOrleans_HostAddress}}/counter/session456/state
+Accept: application/json
+
+
+### 12. Get Session Counter State
+GET {{MicrosoftOrleans_HostAddress}}/orleans/stats
+Accept: application/json
