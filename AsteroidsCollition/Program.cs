@@ -12,6 +12,17 @@ int[] asteroids = {-6,-6, 2, 4, -3, 6, 1, 3, -5, -6, 4, -6}; // -6 -6 6 6
 /*
 6, 2, 4, -3, 6, 1, 3, -5, -6, 4, -6
 -6 -6 -6 6
+
+
+
+I ll type here for the questions to be asked ::
+
+1. Approach: Priority queue, space O(k), time log(k)<--- tell this
+2. Approach: Quick select
+
+cool
+
+
 */
 //int[] asteroids = { 6, 8, -8 };
 
