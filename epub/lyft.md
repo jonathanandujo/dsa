@@ -1,17 +1,34 @@
 # Lyft Interview Preparation
 
-## How to use this book
+## How to Use This Book
 
-For each problem:
+For each exercise:
 
-1. Read problem.
-2. Try to solve without help.
-3. Do a dry run.
-4. Write solution in C#.
-5. Explain complexity.
-6. Explain why is better than brute force.
+1. Identify the pattern from the problem's constraints and required output.
+2. Try to solve it before reading the key insight.
+3. Trace the algorithm on a small example.
+4. Explain the time and space complexity.
+5. Summarize the approach in one interview-ready sentence.
 
----
+## Contents
+
+- [Sliding Window](#sliding-window)
+- [Hashing](#hashing)
+- [Graphs](#graphs)
+- [Trees](#trees)
+- [Trie](#trie)
+- [Heaps](#heaps)
+- [Data Structure Design](#data-structure-design)
+- [Linked Lists](#linked-lists)
+- [Backtracking](#backtracking)
+- [Dynamic Programming](#dynamic-programming)
+- [Intervals](#intervals)
+- [Prefix Sum](#prefix-sum)
+- [Two Pointers](#two-pointers)
+- [Math](#math)
+- [Simulation](#simulation)
+- [Pattern Recognition Cheat Sheet](#pattern-recognition-cheat-sheet)
+- [Last Minute Review](#last-minute-review)
 
 # Sliding Window
 
@@ -19,41 +36,28 @@ For each problem:
 
 ### Pattern
 
-Sliding Window Variable
+Variable-size sliding window
 
 ### Recognition
 
-- Minimum substring
-- Contains all characters
-- Expand and shrink window
+- Minimum substring containing all required characters
+- Window expands and contracts
 
-### Brute Force
+### Key Insight
 
-Probar todas las ventanas posibles y verificar si contienen todos los caracteres.
-
-### Optimal Idea
-
-Expandir por la derecha hasta tener todos los caracteres requeridos.
-
-Una vez válida la ventana:
-
-- Guardar resultado.
-- Comenzar a contraer por la izquierda.
-- Mantener la ventana válida lo más pequeña posible.
+Track the multiplicity of each required character. Expand until the window is valid, then shrink from the left while recording the smallest valid window.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(|s| + |t|)
+- Space: O(1) for the fixed ASCII alphabet.
 
-Space: O(1)
+### Interview One-Liner
 
-### Common Mistakes
+Expand until all required characters are covered, then shrink the window to find the shortest valid substring.
 
-- No manejar caracteres repetidos de t.
-- No actualizar correctamente el contador de caracteres faltantes.
-- Confundirse con caracteres extra.
+### Solution
 
-### My Solution
 ```csharp
 public class Solution
 {
@@ -103,38 +107,27 @@ public class Solution
 
 ### Pattern
 
-Sliding Window
+Sliding window + hash set
 
 ### Recognition
 
-- Longest substring
-- Without duplicates
+- Longest substring with a uniqueness constraint
+- Duplicates invalidate the current window
 
-### Brute Force
+### Key Insight
 
-Generar todas las substrings.
-
-### Optimal Idea
-
-Mantener una ventana sin duplicados usando HashSet o frecuencias.
-
-Cuando aparece un duplicado:
-
-- Mover left.
-- Eliminar caracteres de la ventana.
+Maintain a duplicate-free window. When the right character is already present, remove characters from the left until it can be added.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(n)
+- Space: O(min(n, alphabet size)).
 
-Space: O(k)
+### Interview One-Liner
 
-### Common Mistakes
+Keep a duplicate-free sliding window and update the maximum length as its right edge advances.
 
-- Mover right sin limpiar duplicados.
-- No actualizar el tamaño máximo.
-
-### My Solution
+### Solution
 
 ```csharp
 public class Solution {
@@ -164,35 +157,27 @@ public class Solution {
 
 ### Pattern
 
-HashSet
+Hash set
 
 ### Recognition
 
-- Consecutive numbers
-- O(n) expected
+- Consecutive values, regardless of input order
+- Expected linear-time target
 
-### Brute Force
+### Key Insight
 
-Ordenar.
-
-### Better
-
-Usar HashSet.
-
-Comenzar únicamente desde números que no tengan predecesor.
+Put values in a hash set and start a scan only at values whose predecessor is absent. Count forward from each sequence start.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(n) expected
+- Space: O(n).
 
-Space: O(n)
+### Interview One-Liner
 
-### Common Mistakes
+Start counting only at numbers with no predecessor, so every consecutive run is scanned once.
 
-- Comenzar secuencias desde cualquier número.
-- Ordenar innecesariamente.
-
-### My Solution
+### Solution
 
 ```csharp
 public class Solution {
@@ -227,36 +212,28 @@ public class Solution {
 
 ### Pattern
 
-Multi Source BFS
+Multi-source breadth-first search
 
 ### Recognition
 
-- Spread
-- Infection
-- Time simulation
+- Spread from multiple starting points
+- Each step represents one time unit
 
-### Brute Force
+### Key Insight
 
-Simular minuto por minuto revisando toda la matriz.
-
-### Optimal Idea
-
-Todas las naranjas podridas iniciales entran al queue.
-
-Cada nivel del BFS representa un minuto.
+Start BFS from every rotten orange at once. Process one queue level per minute and count fresh oranges as they become rotten.
 
 ### Complexity
 
-Time: O(m*n)
+- Time: O(rows × columns)
+- Space: O(rows × columns).
 
-Space: O(m*n)
+### Interview One-Liner
 
-### Common Mistakes
+Run level-order BFS from all initially rotten oranges; each level is one minute of spread.
 
-- Incrementar minutos incorrectamente.
-- No procesar BFS por niveles.
+### Solution
 
-### My Solution
 ```csharp
 public class Solution {
     public int OrangesRotting(int[][] grid) {
@@ -326,36 +303,28 @@ public class Solution {
 
 ### Pattern
 
-Cycle Detection
+Topological sort + cycle detection
 
 ### Recognition
 
-- Prerequisites
-- Dependencies
+- Prerequisite dependencies
+- Determine whether every course can be completed
 
-### Approaches
+### Key Insight
 
-- DFS
-- Kahn Topological Sort
-
-### Optimal Idea
-
-Si todos los nodos pueden procesarse:
-
-No existe ciclo.
+Build the directed prerequisite graph and count indegrees. Kahn's algorithm can process all courses exactly when the graph is acyclic.
 
 ### Complexity
 
-Time: O(V+E)
+- Time: O(V + E)
+- Space: O(V + E).
 
-Space: O(V+E)
+### Interview One-Liner
 
-### Common Mistakes
+Repeatedly remove zero-indegree courses; all courses are finishable if every node is removed.
 
-- Usar un solo HashSet.
-- No distinguir visited de visiting.
+### Solution
 
-### My Solution
 ```csharp
 public class Solution
 {
@@ -413,26 +382,28 @@ public class Solution
 
 ### Pattern
 
-Topological Sort
+Topological sort (Kahn's algorithm)
 
 ### Recognition
 
-- Return ordering
-- Dependencies
+- Return a valid dependency order
+- Return an empty array when a cycle exists
 
-### Idea
+### Key Insight
 
-Aplicar Kahn y construir el orden.
-
-English: Use Kahn's algorithm to build the ordering.
+Use indegrees and a queue of available courses to build a topological ordering. The ordering is valid only if it contains every course.
 
 ### Complexity
 
-Time: O(V+E)
+- Time: O(V + E)
+- Space: O(V + E).
 
-Space: O(V+E)
+### Interview One-Liner
 
-### My Solution
+Use Kahn's algorithm to build the course order and return it only if all courses are included.
+
+### Solution
+
 ```csharp
 public class Solution
 {
@@ -491,33 +462,29 @@ public class Solution
 
 ### Pattern
 
-Graph DFS/BFS
+Directed graph + DFS/BFS
 
 ### Recognition
 
-- Reachability
-- Chain reaction
+- Reachability through one-way chain reactions
+- Each bomb has its own blast radius
 
-### Idea
+### Key Insight
 
-Construir grafo.
-
-Desde cada bomba realizar DFS/BFS.
-
-English: Build a graph, then run DFS or BFS from each bomb.
-
-### One-Liner Interview Explanation
-
-Model each bomb as a node in a directed graph. Add an edge i -> j when bomb j is inside bomb i's blast radius. Then run DFS/BFS from every node and return the maximum number of reachable nodes. Building the graph costs O(n²), and because n ≤ 100, traversing from every node is efficient.
+Create a directed edge from bomb i to bomb j when j lies within i's blast radius. Traverse from every bomb and keep the largest reachable count.
 
 ### Complexity
 
-Time: O(n²)
+- Time: O(n × (n + E)), worst case O(n³)
+- Space: O(n²).
 
-Space: O(n²)
+### Interview One-Liner
 
-### My Solution
-```
+Build the directed blast graph, then run a traversal from every bomb and take the largest reachable set.
+
+### Solution
+
+```csharp
 public class Solution
 {
     public int MaximumDetonation(int[][] bombs)
@@ -586,32 +553,36 @@ public class Solution
         return visited.Count;
     }
 }
+```
+
 ---
 
 ## 126. Word Ladder II
 
 ### Pattern
 
-BFS + Backtracking
+BFS + backtracking
 
 ### Recognition
 
-- Shortest transformations
-- Return all paths
+- Find every shortest transformation sequence
+- Each step changes exactly one character
 
-### Idea
+### Key Insight
 
-BFS para construir niveles.
-
-Backtracking para reconstruir rutas.
-
-English: Use BFS to build the levels, then use backtracking to reconstruct the paths.
+Use BFS by levels to record every parent that reaches a word at its shortest distance. Once the target level is found, backtrack through those parent links to emit all shortest paths.
 
 ### Complexity
 
-High
+- Time: O(N × L × 26 + output size)
+- Space: O(N × L + output size), where N is the dictionary size and L is word length.
 
-### My Solution
+### Interview One-Liner
+
+BFS records all shortest-path parents; backtracking through that graph returns every minimum-length word ladder.
+
+### Solution
+
 ```csharp
 public class Solution
 {
@@ -738,58 +709,28 @@ public class Solution
 
 ### Pattern
 
-Tree DFS
+DFS with lower and upper bounds
 
 ### Recognition
 
-- BST validation
+- Validate the entire BST ordering
+- A descendant can violate an ancestor's constraint
 
-### Wrong Approach
+### Key Insight
 
-Comparar únicamente hijos directos.
-
-### Optimal Idea
-
-Propagar límites válidos.
+Carry an exclusive lower and upper bound down the tree. Each node must satisfy all ancestor constraints, not just its parent-child comparison.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(n)
+- Space: O(h) recursion stack.
 
-Space: O(h)
+### Interview One-Liner
 
-### Common Mistakes
+Validate each node against bounds inherited from every ancestor, not only against its direct children.
 
-- Verificar sólo padre e hijo.
+### Solution
 
-### Notes
-Pattern:
-DFS + Min/Max Bounds
-
-Key Insight:
-A node must satisfy constraints from ALL ancestors,
-not only its direct parent.
-
-For each node:
-min < node.val < max
-
-Left subtree:
-(min, node.val)
-
-Right subtree:
-(node.val, max)
-
-Complexity:
-Time: O(n)
-Space: O(h)
-
-Interview Trap:
-Checking only:
-node.left < node < node.right
-
-is WRONG.
-
-### My Solution
 ```csharp
 /**
  * Definition for a binary tree node.
@@ -831,44 +772,28 @@ public class Solution
 
 ### Pattern
 
-BFS
+Breadth-first search
 
 ### Recognition
 
-- Complete Tree
+- Check complete-tree shape
+- Last level is filled from left to right
 
-### Idea
+### Key Insight
 
-Una vez encontrado un null, todos los nodos siguientes deben ser null.
-
-English: Once a null node is found, all following nodes must also be null.
+In level-order traversal, after the first missing child position, no later position may contain a node.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(n)
+- Space: O(n).
 
-Space: O(n)
+### Interview One-Liner
 
-### My Notes
-Pattern:
-BFS / Level-Order Traversal
+During BFS, once a null position appears, every subsequent position must also be null.
 
-Key Insight:
-After the first null node appears in BFS order,
-every remaining node must also be null.
+### Solution
 
-Algorithm:
-1. BFS through the tree.
-2. Once null is found, set seenNull = true.
-3. If a non-null node appears afterward, return false.
-
-Complexity:
-Time: O(n)
-Space: O(n)
-
-Interview Trigger:
-"Complete Binary Tree" => Think BFS.
-### My Solution
 ```csharp
 /**
  * Definition for a binary tree node.
@@ -920,46 +845,28 @@ public class Solution
 
 ### Pattern
 
-Divide and Conquer
+Divide and conquer + slow/fast pointers
 
 ### Recognition
 
-- Sorted List
-- Balanced BST
+- Convert sorted linked data to a balanced BST
+- Input has no random access
 
-### Idea
+### Key Insight
 
-Encontrar nodo medio.
-
-Construir recursivamente.
-
-English: Find the middle node, then build the tree recursively.
+Find the middle list node to use as the root, split the list, and recursively build the left and right subtrees.
 
 ### Complexity
 
-Time: O(n log n)
-
-### My Notes
-
-**Pattern:** Fast & Slow Pointers + Divide and Conquer
-
-**Key Insight:**
-The middle node becomes the root because the input is sorted.
-Use slow/fast pointers to find the middle element, then recursively build left and right subtrees.
-
-**Algorithm**
-1. Find middle node with slow/fast pointers.
-2. Use middle as root.
-3. Recursively build left subtree from left half.
-4. Recursively build right subtree from right half.
-
-**Complexity**
 - Time: O(n log n)
-- Space: O(log n)
+- Space: O(log n) recursion stack.
 
-**Interview One-Liner**
-Use the middle node as the BST root, found with slow/fast pointers, and recursively build balanced left and right subtrees from the two halves.
-### My Solution
+### Interview One-Liner
+
+Choose the middle list node as the root, then recursively build balanced subtrees from both halves.
+
+### Solution
+
 ```csharp
 /**
  * Definition for singly-linked list.
@@ -1024,64 +931,155 @@ public class Solution
 
 ### Pattern
 
-BST Construction
+Preorder traversal + value bounds
 
 ### Recognition
 
-- Preorder
-- BST
+- Construct a BST from preorder without sorting
+- Subtrees occupy bounded value ranges
 
-### Idea
+### Key Insight
 
-Usar límites min/max.
-
-English: Use minimum and maximum bounds.
+Consume preorder values in order. Recursively build a node only when the next value lies within the subtree's exclusive bounds.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(n)
+- Space: O(h) recursion stack.
 
-### My Solution
+### Interview One-Liner
+
+Consume preorder once, using lower and upper bounds to assign each value to its valid subtree.
+
+### Solution
+
 ```csharp
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     public int val;
- *     public TreeNode left;
- *     public TreeNode right;
- *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
-public class Solution {
-    public TreeNode BstFromPreorder(int[] preorder) {
-        TreeNode result = new TreeNode(preorder[0]);
-        for(int i =1; i < preorder.Length; i++){
-            InsertIntoTree(result, preorder[i]);
-        }
-        return result;
+public class Solution
+{
+    private int index;
+
+    public TreeNode BstFromPreorder(int[] preorder)
+    {
+        index = 0;
+        return Build(preorder, long.MinValue, long.MaxValue);
     }
-    
-    private void InsertIntoTree(TreeNode node, int val) {
-        TreeNode before = null;
-        TreeNode after = node;
-        while (after != null){
-            before = after;
-            
-            if(val < after.val)
-                after = after.left;
-            else if (val > after.val)
-                after = after.right;
-        }
-        
-        TreeNode newNode = new TreeNode(val);
-        if (val < before.val)
-            before.left = newNode;
-        else
-            before.right = newNode;
+
+    private TreeNode Build(int[] preorder, long lower, long upper)
+    {
+        if (index == preorder.Length ||
+            preorder[index] <= lower ||
+            preorder[index] >= upper)
+            return null;
+
+        int value = preorder[index++];
+        TreeNode node = new(value);
+        node.left = Build(preorder, lower, value);
+        node.right = Build(preorder, value, upper);
+        return node;
+    }
+}
+```
+
+---
+
+## 236. Lowest Common Ancestor of a Binary Tree
+
+### Pattern
+
+Postorder DFS
+
+### Recognition
+
+- Find the lowest shared ancestor of two nodes
+- The tree is not necessarily a BST
+
+### Key Insight
+
+A recursive search returns a target node when found. If the left and right subtrees each return a non-null result, the current node is the lowest common ancestor.
+
+### Complexity
+
+- Time: O(n)
+- Space: O(h) recursion stack.
+
+### Interview One-Liner
+
+Search both subtrees; the first node receiving a target from each side is the lowest common ancestor.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+    {
+        if (root == null || root == p || root == q)
+            return root;
+
+        TreeNode left = LowestCommonAncestor(root.left, p, q);
+        TreeNode right = LowestCommonAncestor(root.right, p, q);
+
+        if (left != null && right != null)
+            return root;
+
+        return left ?? right;
+    }
+}
+```
+
+---
+
+## 124. Binary Tree Maximum Path Sum
+
+### Pattern
+
+Postorder DFS + running maximum
+
+### Recognition
+
+- Maximum path can start and end anywhere
+- A path may use a node's left and right branches
+
+### Key Insight
+
+For each node, return the best one-sided gain to its parent, clamping negative gains to zero. Separately update the global answer using both child gains and the node value.
+
+### Complexity
+
+- Time: O(n)
+- Space: O(h) recursion stack.
+
+### Interview One-Liner
+
+Return one positive branch upward, but update the global best with the node and both positive branches.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    private int bestPath;
+
+    public int MaxPathSum(TreeNode root)
+    {
+        bestPath = int.MinValue;
+        MaxGain(root);
+        return bestPath;
+    }
+
+    private int MaxGain(TreeNode node)
+    {
+        if (node == null)
+            return 0;
+
+        int leftGain = Math.Max(0, MaxGain(node.left));
+        int rightGain = Math.Max(0, MaxGain(node.right));
+
+        bestPath = Math.Max(
+            bestPath,
+            node.val + leftGain + rightGain);
+
+        return node.val + Math.Max(leftGain, rightGain);
     }
 }
 ```
@@ -1094,27 +1092,28 @@ public class Solution {
 
 ### Pattern
 
-Trie
+Prefix tree
 
 ### Recognition
 
-- Prefix
-- Dictionary
-- Autocomplete
+- Repeated prefix lookups
+- Insert, exact search, and prefix search
 
-### Operations
+### Key Insight
 
-- Insert
-- Search
-- StartsWith
+Store characters along shared trie paths. Mark the final node of each inserted word so exact-word search differs from prefix search.
 
 ### Complexity
 
-Insert: O(n)
+- Insert/search/prefix: O(L)
+- Space: O(total inserted characters).
 
-Search: O(n)
+### Interview One-Liner
 
-### My Solution
+Walk or create one trie edge per character, and mark terminal nodes to distinguish words from prefixes.
+
+### Solution
+
 ```csharp
 public class Trie {
     private readonly Node root = new();
@@ -1157,31 +1156,57 @@ public class Trie {
 
 ---
 
-# Heap
+# Heaps
 
 ## 253. Meeting Rooms II
 
 ### Pattern
 
-Heap
+Min-heap of meeting end times
 
 ### Recognition
 
-- Overlapping intervals
+- Minimum number of rooms for overlapping intervals
+- A room is reusable when its meeting has ended
 
-### Idea
+### Key Insight
 
-Ordenar por inicio.
-
-MinHeap de tiempos de terminación.
-
-English: Sort by start time and use a min-heap of end times.
+Sort meetings by start time and track occupied room end times in a min-heap. Remove every meeting that ends before the next meeting starts.
 
 ### Complexity
 
-Time: O(n log n)
+- Time: O(n log n)
+- Space: O(n).
 
-### My Notes
+### Interview One-Liner
+
+Process meetings by start time and reuse every room whose earliest ending meeting has finished.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    public int MinMeetingRooms(int[][] intervals)
+    {
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+        PriorityQueue<int, int> endingTimes = new();
+        int rooms = 0;
+
+        foreach (int[] interval in intervals)
+        {
+            while (endingTimes.Count > 0 &&
+                   endingTimes.Peek() <= interval[0])
+                endingTimes.Dequeue();
+
+            endingTimes.Enqueue(interval[1], interval[1]);
+            rooms = Math.Max(rooms, endingTimes.Count);
+        }
+
+        return rooms;
+    }
+}
+```
 
 ---
 
@@ -1189,68 +1214,146 @@ Time: O(n log n)
 
 ### Pattern
 
-Heap
+Min-heap + moving range maximum
 
 ### Recognition
 
-- K sorted lists
+- Choose one value from every sorted list
+- Minimize the range width
 
-### Idea
+### Key Insight
 
-Mantener el mínimo actual con heap.
-
-English: Use a heap to keep track of the current minimum.
+Keep one current value from each list in a min-heap and track the current maximum. Repeatedly advance the list containing the minimum; stop when that list is exhausted.
 
 ### Complexity
 
-Time: O(n log k)
+- Time: O(N log k)
+- Space: O(k), where N is the total number of values.
 
-### My Solution
+### Interview One-Liner
+
+Track one value per list, advance the current minimum, and record the narrowest range covering all lists.
+
+### Solution
+
 ```csharp
 public class Solution
 {
     public int[] SmallestRange(IList<IList<int>> nums)
     {
-        var merged = new List<(int value, int listIndex)>();
-        // Merge all numbers with their originating list index
-        for (int i = 0; i < nums.Count; i++)
-            foreach (var num in nums[i])
-                merged.Add((num, i));
-        // Sort by value
-        merged.Sort((a, b) => a.value.CompareTo(b.value));
-        var freq = new Dictionary<int, int>();
-        int left = 0, count = 0;
-        int rangeStart = 0, rangeEnd = int.MaxValue;
+        PriorityQueue<(int Value, int List, int Index), int> minHeap = new();
+        int currentMax = int.MinValue;
 
-        for (int right = 0; right < merged.Count; right++)
+        for (int list = 0; list < nums.Count; list++)
         {
-            int listId = merged[right].listIndex;
-            if (!freq.ContainsKey(listId))
-                freq[listId] = 0;
-
-            freq[listId]++;
-            if (freq[listId] == 1)
-                count++;
-
-            // Try to shrink the window when all lists are represented
-            while (count == nums.Count)
-            {
-                int curStart = merged[left].value;
-                int curEnd = merged[right].value;
-                if (curEnd - curStart < rangeEnd - rangeStart)
-                {
-                    rangeStart = curStart;
-                    rangeEnd = curEnd;
-                }
-                int leftListId = merged[left].listIndex;
-                freq[leftListId]--;
-                if (freq[leftListId] == 0)
-                    count--;
-
-                left++;
-            }
+            int value = nums[list][0];
+            minHeap.Enqueue((value, list, 0), value);
+            currentMax = Math.Max(currentMax, value);
         }
-        return new int[] { rangeStart, rangeEnd };
+
+        int bestStart = minHeap.Peek().Value;
+        int bestEnd = currentMax;
+
+        while (minHeap.Count == nums.Count)
+        {
+            var current = minHeap.Dequeue();
+            if (currentMax - current.Value < bestEnd - bestStart ||
+                (currentMax - current.Value == bestEnd - bestStart &&
+                 current.Value < bestStart))
+            {
+                bestStart = current.Value;
+                bestEnd = currentMax;
+            }
+
+            int nextIndex = current.Index + 1;
+            if (nextIndex == nums[current.List].Count)
+                break;
+
+            int nextValue = nums[current.List][nextIndex];
+            currentMax = Math.Max(currentMax, nextValue);
+            minHeap.Enqueue(
+                (nextValue, current.List, nextIndex),
+                nextValue);
+        }
+
+        return new[] { bestStart, bestEnd };
+    }
+}
+```
+
+---
+
+## 215. Kth Largest Element in an Array
+
+### Pattern
+
+Quickselect with three-way partition
+
+### Recognition
+
+- Find an order statistic without fully sorting
+- Duplicates may occur
+
+### Key Insight
+
+The kth largest element is at target index n-k in ascending order. Three-way partition around a pivot and continue only in the partition containing that index.
+
+### Complexity
+
+- Average time: O(n), worst case: O(n²)
+- Extra space: O(1).
+
+### Interview One-Liner
+
+Quickselect toward index n-k, discarding the partition that cannot contain the kth largest value.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    public int FindKthLargest(int[] nums, int k)
+    {
+        int target = nums.Length - k;
+        int left = 0;
+        int right = nums.Length - 1;
+
+        while (left <= right)
+        {
+            int pivot = nums[left + (right - left) / 2];
+            int less = left;
+            int current = left;
+            int greater = right;
+
+            while (current <= greater)
+            {
+                if (nums[current] < pivot)
+                {
+                    (nums[less], nums[current]) = (nums[current], nums[less]);
+                    less++;
+                    current++;
+                }
+                else if (nums[current] > pivot)
+                {
+                    (nums[current], nums[greater]) =
+                        (nums[greater], nums[current]);
+                    greater--;
+                }
+                else
+                {
+                    current++;
+                }
+            }
+
+            if (target < less)
+                right = less - 1;
+            else if (target > greater)
+                left = greater + 1;
+            else
+                return nums[target];
+        }
+
+        throw new InvalidOperationException("k is outside the valid range.");
     }
 }
 ```
@@ -1263,25 +1366,28 @@ public class Solution
 
 ### Pattern
 
-Custom Stack
+Stack with prefix minimum
 
 ### Recognition
 
-- Min
-- Push
-- Pop
+- Retrieve the minimum in constant time
+- Support push and pop
 
-### Idea
+### Key Insight
 
-Stack auxiliar con mínimos.
-
-English: Use an auxiliary stack to keep track of the minimum.
+Store each value with the minimum seen at that stack depth. The top entry then provides both the current value and minimum.
 
 ### Complexity
 
-All operations O(1)
+- Push/pop/top/get-min: O(1)
+- Space: O(n).
 
-### My Solution
+### Interview One-Liner
+
+Store the running minimum alongside each pushed value so every operation, including GetMin, stays O(1).
+
+### Solution
+
 ```csharp
 public class MinStack {
     Stack<(int val,int min)> stack;
@@ -1320,23 +1426,185 @@ public class MinStack {
 
 ---
 
+## 146. LRU Cache
+
+### Pattern
+
+Hash map + doubly linked list
+
+### Recognition
+
+- Fixed-capacity cache
+- Evict the least recently used item in O(1)
+
+### Key Insight
+
+Map keys to nodes in a doubly linked list ordered by recent use. Move accessed or updated nodes to the front, and evict from the back when capacity is exceeded.
+
+### Complexity
+
+- Get/put: O(1) expected
+- Space: O(capacity).
+
+### Interview One-Liner
+
+Combine a hash map for direct lookup with a doubly linked list for O(1) recency updates and eviction.
+
+### Solution
+
+```csharp
+public class LRUCache
+{
+    private sealed class Entry
+    {
+        public int Key { get; }
+        public int Value { get; set; }
+
+        public Entry(int key, int value)
+        {
+            Key = key;
+            Value = value;
+        }
+    }
+
+    private readonly int capacity;
+    private readonly Dictionary<int, LinkedListNode<Entry>> nodes = new();
+    private readonly LinkedList<Entry> recency = new();
+
+    public LRUCache(int capacity)
+    {
+        this.capacity = capacity;
+    }
+
+    public int Get(int key)
+    {
+        if (!nodes.TryGetValue(key, out LinkedListNode<Entry> node))
+            return -1;
+
+        recency.Remove(node);
+        recency.AddFirst(node);
+        return node.Value.Value;
+    }
+
+    public void Put(int key, int value)
+    {
+        if (nodes.TryGetValue(key, out LinkedListNode<Entry> node))
+        {
+            node.Value.Value = value;
+            recency.Remove(node);
+            recency.AddFirst(node);
+            return;
+        }
+
+        if (nodes.Count == capacity)
+        {
+            LinkedListNode<Entry> leastRecent = recency.Last;
+            nodes.Remove(leastRecent.Value.Key);
+            recency.RemoveLast();
+        }
+
+        LinkedListNode<Entry> entry =
+            recency.AddFirst(new Entry(key, value));
+        nodes.Add(key, entry);
+    }
+}
+```
+
+---
+
 ## 716. Max Stack
 
 ### Pattern
 
-Data Structure Design
+Doubly linked list + ordered value index
 
 ### Recognition
 
-- Max retrieval
-- Max removal
+- Pop the most recent item or the maximum item
+- Duplicate maximum values require recency ordering
 
-### Approaches
+### Key Insight
 
-- Two stacks
-- DLL + TreeMap
+Keep stack order in a doubly linked list and index nodes by value in ordered value buckets. The ordered set identifies the maximum; each bucket's last node is its most recently pushed occurrence.
 
-### My Notes
+### Complexity
+
+- Push/pop/top/peek-max: O(log n) with ordered indexing
+- Pop-max: O(log n)
+- Space: O(n).
+
+### Interview One-Liner
+
+Maintain stack order separately from an ordered value index so PopMax removes the newest occurrence of the maximum.
+
+### Solution
+
+```csharp
+public class MaxStack
+{
+    private sealed class Entry
+    {
+        public int Value { get; }
+        public LinkedListNode<Entry> OrderNode { get; set; }
+
+        public Entry(int value)
+        {
+            Value = value;
+        }
+    }
+
+    private readonly LinkedList<Entry> order = new();
+    private readonly Dictionary<int, LinkedList<Entry>> nodesByValue = new();
+    private readonly SortedSet<int> values = new();
+
+    public void Push(int x)
+    {
+        Entry entry = new(x);
+        entry.OrderNode = order.AddLast(entry);
+
+        if (!nodesByValue.TryGetValue(x, out LinkedList<Entry> entries))
+        {
+            entries = new LinkedList<Entry>();
+            nodesByValue.Add(x, entries);
+            values.Add(x);
+        }
+
+        entries.AddLast(entry);
+    }
+
+    public int Pop()
+    {
+        Entry entry = order.Last.Value;
+        Remove(entry);
+        return entry.Value;
+    }
+
+    public int Top() => order.Last.Value.Value;
+
+    public int PeekMax() => values.Max;
+
+    public int PopMax()
+    {
+        int maxValue = values.Max;
+        Entry entry = nodesByValue[maxValue].Last.Value;
+        Remove(entry);
+        return entry.Value;
+    }
+
+    private void Remove(Entry entry)
+    {
+        order.Remove(entry.OrderNode);
+
+        LinkedList<Entry> entries = nodesByValue[entry.Value];
+        entries.RemoveLast();
+        if (entries.Count == 0)
+        {
+            nodesByValue.Remove(entry.Value);
+            values.Remove(entry.Value);
+        }
+    }
+}
+```
 
 ---
 
@@ -1344,46 +1612,29 @@ Data Structure Design
 
 ### Pattern
 
-HashMap + Binary Search
+Hash map + binary search
 
 ### Recognition
 
-- Timestamp lookups
+- Look up the latest value at or before a timestamp
+- Each key has a timestamped history
 
-### Idea
+### Key Insight
 
-Guardar pares ordenados por tiempo.
-
-Binary search durante consultas.
-
-English: Store key-value pairs ordered by timestamp and use binary search for lookups.
+Store each key's values in timestamp order. For Get, binary-search for the rightmost timestamp not greater than the query.
 
 ### Complexity
 
-Set: O(1)
+- Set: O(1) amortized
+- Get: O(log m)
+- Space: O(n), where m is that key's history length.
 
-Get: O(log n)
+### Interview One-Liner
 
-### My Notes
-**Pattern:** HashMap + Binary Search
+Keep each key's history sorted and binary-search for the latest timestamp that does not exceed the query.
 
-**Key Insight:**
-For each key, store values ordered by timestamp.
-Use binary search to find the latest timestamp <= target timestamp.
+### Solution
 
-**Algorithm**
-1. HashMap<Key, List<(timestamp, value)>>.
-2. Append values during Set() since timestamps are strictly increasing.
-3. During Get(), binary search for the rightmost timestamp <= target.
-
-**Complexity**
-- Set: O(1)
-- Get: O(log n)
-- Space: O(n)
-
-**Interview One-Liner**
-Store each key's history in timestamp order and use binary search to find the most recent value whose timestamp does not exceed the requested timestamp.
-### My Solution
 ```csharp
 public class TimeMap
 {
@@ -1448,45 +1699,28 @@ public class TimeMap
 
 ### Pattern
 
-Merge Sort
+Merge sort + slow/fast pointers
 
 ### Recognition
 
-- Sort linked list
+- Sort a linked list in O(n log n)
+- No random access to list positions
 
-### Idea
+### Key Insight
 
-Slow/Fast Pointer.
-
-Merge Sort.
-
-English: Use slow and fast pointers to split the list, then apply merge sort.
+Split the list with slow and fast pointers, recursively sort both halves, and merge them in linear time.
 
 ### Complexity
 
-Time: O(n log n)
-
-Space: O(log n)
-
-### My Notes
-**Pattern:** Merge Sort on Linked List
-
-**Key Insight:**
-Linked lists do not support random access, making Merge Sort the optimal O(n log n) sorting algorithm.
-
-**Algorithm**
-1. Find the middle using slow/fast pointers.
-2. Split the list into two halves.
-3. Recursively sort both halves.
-4. Merge the two sorted lists.
-
-**Complexity**
 - Time: O(n log n)
-- Space: O(log n) recursion stack
+- Space: O(log n) recursion stack.
 
-**Interview One-Liner**
-Use Merge Sort: split the linked list with slow/fast pointers, recursively sort both halves, then merge the sorted lists.
-### My Solution
+### Interview One-Liner
+
+Use merge sort: split with slow/fast pointers, recursively sort each half, and merge the sorted lists.
+
+### Solution
+
 ```csharp
 /**
  * Definition for singly-linked list.
@@ -1555,29 +1789,93 @@ public class Solution
 
 ---
 
+## 23. Merge K Sorted Lists
+
+### Pattern
+
+Min-heap / priority queue
+
+### Recognition
+
+- Merge multiple sorted linked lists
+- Always take the smallest current head
+
+### Key Insight
+
+Put each non-empty list head in a min-priority queue. Repeatedly append the smallest node and insert its successor.
+
+### Complexity
+
+- Time: O(N log k)
+- Space: O(k), where N is the total number of nodes.
+
+### Interview One-Liner
+
+Use a min-heap containing one current node per list, adding each removed node's successor.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    public ListNode MergeKLists(ListNode[] lists)
+    {
+        PriorityQueue<ListNode, int> minHeap = new();
+
+        foreach (ListNode head in lists)
+        {
+            if (head != null)
+                minHeap.Enqueue(head, head.val);
+        }
+
+        ListNode dummy = new(0);
+        ListNode tail = dummy;
+
+        while (minHeap.Count > 0)
+        {
+            ListNode node = minHeap.Dequeue();
+            tail.next = node;
+            tail = node;
+
+            if (node.next != null)
+                minHeap.Enqueue(node.next, node.next.val);
+        }
+
+        return dummy.next;
+    }
+}
+```
+
+---
+
 # Backtracking
 
 ## 17. Letter Combinations of a Phone Number
 
 ### Pattern
 
-Backtracking
+DFS backtracking
 
 ### Recognition
 
-- Generate combinations
+- Generate all choices across digit positions
+- Each digit maps to several letters
 
-### Idea
+### Key Insight
 
-DFS creando combinaciones carácter por carácter.
-
-English: Use DFS to build combinations one character at a time.
+At each digit, recursively try every mapped letter. Add a combination when one letter has been chosen for every digit.
 
 ### Complexity
 
-O(4^n)
+- Time: O(4ⁿ × n) including output
+- Auxiliary space: O(n).
 
-### My Solution
+### Interview One-Liner
+
+Use DFS to choose one mapped letter per digit and emit each completed combination.
+
+### Solution
+
 ```csharp
 public class Solution {
     public IList<string> LetterCombinations(string digits) {
@@ -1623,51 +1921,28 @@ public class Solution {
 
 ### Pattern
 
-Dynamic Programming
+One-dimensional DP
 
 ### Recognition
 
-- Count ways
+- Count interpretations of a digit string
+- Zero is valid only as part of 10 or 20
 
-### Idea
+### Key Insight
 
-DP sobre la posición.
-
-English: Use dynamic programming over the string positions.
+At each position, add the ways from the previous position for a valid single digit, and from two positions back for a valid pair from 10 through 26.
 
 ### Complexity
 
-Time: O(n)
-
-Space: O(1)
-
-### Common Mistakes
-
-- Manejo de ceros.
-
-### My Notes
-**Pattern:** Dynamic Programming
-
-**Key Insight:**
-At each position, you can decode:
-- One digit (1-9)
-- Two digits (10-26)
-
-The number of ways to reach a position is the sum of valid one-digit and two-digit decodings.
-
-**Algorithm**
-1. DP[i] = number of ways to decode up to index i.
-2. If current digit is valid (1-9), add DP[i-1].
-3. If current two-digit number is valid (10-26), add DP[i-2].
-4. Optimize DP into two variables.
-
-**Complexity**
 - Time: O(n)
-- Space: O(1)
+- Extra space: O(1).
 
-**Interview One-Liner**
-For each position, count valid one-digit and two-digit decodings, and use DP to accumulate the total number of ways.
-### My Solution
+### Interview One-Liner
+
+For each index, combine valid one-digit and two-digit decodings while keeping only the previous two DP values.
+
+### Solution
+
 ```csharp
 public class Solution
 {
@@ -1705,75 +1980,31 @@ public class Solution
 # Intervals
 
 ## 1094. Car Pooling
-There is a car with capacity empty seats. The vehicle only drives east (i.e., it cannot turn around and drive west).
-
-You are given the integer capacity and an array trips where trips[i] = [numPassengersi, fromi, toi] indicates that the ith trip has numPassengersi passengers and the locations to pick them up and drop them off are fromi and toi respectively. The locations are given as the number of kilometers due east from the car's initial location.
-
-Passengers are dropped off before new passengers are picked up at the same location. At every point along the route, the total number of passengers in the car must not exceed capacity.
-
-Return true if it is possible to pick up and drop off all passengers for all the given trips, or false otherwise.
-
- 
-
-Example 1:
-
-Input: trips = [[2,1,5],[3,3,7]], capacity = 4
-Output: false
-Explanation:
-At kilometer 1, 2 passengers are picked up, so the car holds 2.
-At kilometer 3, 3 more are picked up, so the car holds 5.
-Since 5 > capacity = 4, the trips cannot all be completed.
-Example 2:
-
-Input: trips = [[2,1,5],[3,3,7]], capacity = 5
-Output: true
-Explanation:
-At kilometer 1, the car holds 2 passengers.
-At kilometer 3, the car holds 5 passengers.
-At kilometer 5, the first 2 are dropped off, so the car holds 3.
-At kilometer 7, the last 3 are dropped off, so the car holds 0.
-The maximum occupancy is 5, which never exceeds capacity = 5.
 
 ### Pattern
 
-Sweep Line
+Sweep line / difference array
 
 ### Recognition
 
-- Capacity
-- Trips
+- Passenger occupancy changes at trip endpoints
+- Drop-offs happen before pickups at the same location
 
-### Idea
+### Key Insight
 
-Registrar eventos de subida y bajada.
-
-Recorrer cronológicamente.
-
-English: Record pickup and drop-off events, then process them in chronological order.
+Add passengers at each pickup and subtract them at each drop-off. A prefix sum gives occupancy after all changes at a location; reject any value above capacity.
 
 ### Complexity
 
-Time: O(n log n)
+- Time: O(n + U)
+- Space: O(U), where U is the location range.
 
-### My Notes
-**Pattern:** Line Sweep / Difference Array
+### Interview One-Liner
 
-**Key Insight:**
-Instead of tracking each passenger individually, record passenger changes at pickup and dropoff locations.
+Record passenger-count changes at each endpoint and scan the running total to ensure capacity is never exceeded.
 
-**Algorithm**
-1. Add passengers at pickup location.
-2. Remove passengers at dropoff location.
-3. Compute a running sum.
-4. If passengers ever exceed capacity, return false.
+### Solution
 
-**Complexity**
-- Time: O(n + 1000)
-- Space: O(1000)
-
-**Interview One-Liner**
-Use a difference array to track passenger count changes at each location and compute a running sum to verify capacity is never exceeded.
-### My Solution
 ```csharp
 public class Solution
 {
@@ -1814,63 +2045,64 @@ public class Solution
 
 ### Pattern
 
-2D Prefix Sum
+Two-dimensional prefix sum
 
 ### Recognition
 
-- Many sum queries
+- Many rectangular sum queries on an immutable matrix
+- Each query must take constant time
 
-### Idea
+### Key Insight
 
-Precalcular matriz acumulada.
-
-English: Precompute a prefix-sum matrix.
+Precompute a padded 2D prefix-sum table. Use inclusion-exclusion at the four corners to answer each rectangle query.
 
 ### Complexity
 
-Build: O(m*n)
+- Build: O(rows × columns)
+- Query: O(1)
+- Space: O(rows × columns).
 
-Query: O(1)
+### Interview One-Liner
 
-### My Solution
+Precompute a 2D prefix table and use four-corner inclusion-exclusion for each constant-time query.
+
+### Solution
+
 ```csharp
-public class NumMatrix {
-    private int[][] matrix;
-    public NumMatrix(int[][] matrix) {
-        int m = matrix.Length;
-        int n = matrix[0].Length;
-        
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i > 0)
-                    matrix[i][j] += matrix[i - 1][j];
-                if (j > 0)
-                    matrix[i][j] += matrix[i][j - 1];
-                if (i > 0 && j > 0)
-                    matrix[i][j] -= matrix[i - 1][j - 1];
+public class NumMatrix
+{
+    private readonly int[][] prefix;
+
+    public NumMatrix(int[][] matrix)
+    {
+        int rows = matrix.Length;
+        int cols = rows == 0 ? 0 : matrix[0].Length;
+        prefix = new int[rows + 1][];
+
+        for (int row = 0; row <= rows; row++)
+            prefix[row] = new int[cols + 1];
+
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                prefix[row + 1][col + 1] =
+                    matrix[row][col]
+                    + prefix[row][col + 1]
+                    + prefix[row + 1][col]
+                    - prefix[row][col];
             }
         }
-        this.matrix = matrix;
     }
-    
-    public int SumRegion(int row1, int col1, int row2, int col2) {
-        int result = matrix[row2][col2];
-        if (row1 > 0)
-            result -= matrix[row1 - 1][col2];
-        if (col1 > 0)
-            result -= matrix[row2][col1 - 1];
-        if (row1 > 0 && col1 > 0)
-            result += matrix[row1 - 1][col1 - 1];
-        
-        return result;
+
+    public int SumRegion(int row1, int col1, int row2, int col2)
+    {
+        return prefix[row2 + 1][col2 + 1]
+            - prefix[row1][col2 + 1]
+            - prefix[row2 + 1][col1]
+            + prefix[row1][col1];
     }
 }
-
-/**
- * Your NumMatrix object will be instantiated and called as such:
- * NumMatrix obj = new NumMatrix(matrix);
- * int param_1 = obj.SumRegion(row1,col1,row2,col2);
- */
 ```
 
 ---
@@ -1881,27 +2113,28 @@ public class NumMatrix {
 
 ### Pattern
 
-Two Pointers
+Read/write pointers
 
 ### Recognition
 
-- In place compression
+- Compress consecutive character runs in place
+- Only the resulting prefix is returned
 
-### Idea
+### Key Insight
 
-Leer grupos.
-
-Escribir resultado.
-
-English: Read each group of characters and write the compressed result.
+Read each run once and write its character and, when greater than one, the decimal digits of its count into the array's prefix.
 
 ### Complexity
 
-Time: O(n)
+- Time: O(n)
+- Extra space: O(1).
 
-Space: O(1)
+### Interview One-Liner
 
-### My Solution
+Use separate read and write pointers to replace each run with its character and optional count.
+
+### Solution
+
 ```csharp
 public class Solution
 {
@@ -1946,42 +2179,28 @@ public class Solution
 
 ### Pattern
 
-Math
+Greatest common divisor
 
 ### Recognition
 
-- Jugs
-- Measure volume
+- Measure an exact target using two jug capacities
+- Operations fill, empty, and pour
 
-### Idea
+### Key Insight
 
-Máximo común divisor.
-
-English: Use the greatest common divisor.
+By Bézout's identity, a target is measurable exactly when it does not exceed the total capacity and is divisible by gcd(x, y). Handle target zero directly.
 
 ### Complexity
 
-O(log(min(a,b)))
-
-### My Notes
-**Pattern:** Math (Bézout's Identity)
-
-**Key Insight:**
-You can measure exactly `target` liters iff:
-- `target <= x + y`
-- `target` is a multiple of `gcd(x, y)`
-
-**Algorithm**
-1. If target exceeds total capacity, return false.
-2. Compute gcd(x, y).
-3. Check whether target % gcd(x, y) == 0.
-
-**Complexity**
 - Time: O(log(min(x, y)))
-- Space: O(1)
+- Space: O(1).
 
-**Interview One-Liner**
-By Bézout's Identity, a target volume is measurable iff it is a multiple of gcd(x, y) and does not exceed the combined capacity of both
+### Interview One-Liner
+
+The target is measurable iff it is at most x+y and is a multiple of gcd(x,y), with zero always measurable.
+
+### Solution
+
 ```csharp
 public class Solution
 {
@@ -2009,6 +2228,7 @@ public class Solution
     }
 }
 ```
+
 ---
 
 # Simulation
@@ -2017,53 +2237,28 @@ public class Solution
 
 ### Pattern
 
-BFS Simulation
+BFS over owned and unlocked boxes
 
 ### Recognition
 
-- Keys
-- Locked boxes
+- Opening boxes reveals candies, keys, and more boxes
+- A locked box may become openable later
 
-### Idea
+### Key Insight
 
-Abrir cajas progresivamente a medida que obtienes llaves.
-
-English: Open boxes progressively as keys are obtained.
+Track owned boxes and unlocked status separately. Whenever both conditions hold, enqueue the box once, open it, and process its contents.
 
 ### Complexity
 
-O(n)
+- Time: O(n + K + B)
+- Space: O(n), where K and B are the total key and contained-box entries.
 
-### My Notes
-**Pattern:** BFS / Simulation
+### Interview One-Liner
 
-**Key Insight:**
-A box can only be opened if:
-- You possess the box.
-- You have its key (or it starts unlocked).
+Use a queue for boxes that are both owned and unlocked; opening each box once may reveal further boxes and keys.
 
-Opening a box may give:
-- Candies
-- More keys
-- More boxes
+### Solution
 
-Process boxes as soon as they become openable.
-
-**Algorithm**
-1. Track owned boxes.
-2. Queue every box that is both owned and unlocked.
-3. Open boxes with BFS.
-4. Collect candies, keys, and contained boxes.
-5. Enqueue newly openable boxes.
-
-**Complexity**
-- Time: O(n)
-- Space: O(n)
-
-**Interview One-Liner**
-Use BFS to repeatedly open every box that is both owned and unlocked, collecting keys and new boxes that may unlock additional opportunities.
-
-### My Solution
 ```csharp
 public class Solution
 {
@@ -2118,50 +2313,35 @@ public class Solution
     }
 }
 ```
+
 ---
 
 ## 1620. Coordinate With Maximum Network Quality
 
 ### Pattern
 
-Brute Force Geometry
+Bounded-grid brute force
 
 ### Recognition
 
-- Coordinates
-- Signal strength
+- Find the coordinate with maximum signal quality
+- Candidate coordinates are bounded from 0 to 50
 
-### Idea
+### Key Insight
 
-Evaluar cada punto candidato.
-
-English: Evaluate each candidate point.
+Evaluate every coordinate in the 51-by-51 grid, summing the floored contribution from each tower within the radius. Keep the first coordinate on ties.
 
 ### Complexity
 
-O(n*m)
+- Time: O(51² × t) for t towers
+- Space: O(1).
 
-### My Notes
-**Pattern:** Brute Force + Geometry
+### Interview One-Liner
 
-**Key Insight:**
-Coordinates are bounded (0..50), making brute force feasible.
-Evaluate the network quality at every possible coordinate and keep the best one.
+Because the candidate grid is small, evaluate each point and sum its in-range tower signals.
 
-**Algorithm**
-1. Iterate through all coordinates (0..50, 0..50).
-2. For each tower within radius:
-   floor(qi / (1 + distance)).
-3. Sum signal contributions.
-4. Track the coordinate with maximum quality.
+### Solution
 
-**Complexity**
-- Time: O(51 × 51 × n) ≈ O(n)
-- Space: O(1)
-
-**Interview One-Liner**
-Because coordinates are limited to a 51×51 grid, brute-force every location, compute its signal quality from all reachable towers, and choose the maximum.
-### My Solution
 ```csharp
 public class Solution
 {
@@ -2204,28 +2384,123 @@ public class Solution
     }
 }
 ```
+
 ---
 
 ## 158. Read N Characters Given read4 II
 
 ### Pattern
 
-Buffer Design
+Persistent buffer
 
 ### Recognition
 
-- Stateful API
+- Repeated reads may request fewer characters than read4 returns
+- Unread characters must survive between calls
 
-### Idea
+### Key Insight
 
-Mantener buffer entre llamadas.
-
-English: Keep a buffer between calls.
+Keep the read4 buffer and its valid range as object state. Copy buffered characters first, refilling only when they are exhausted or empty.
 
 ### Complexity
 
-O(n)
+- Time: O(n + read4 calls)
+- Extra space: O(1).
 
-### My Notes
+### Interview One-Liner
+
+Persist the read4 buffer and indices across calls so unused characters are returned before reading more input.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    private readonly char[] buffer = new char[4];
+    private int bufferIndex;
+    private int bufferCount;
+
+    public int Read(char[] buf, int n)
+    {
+        int written = 0;
+
+        while (written < n)
+        {
+            if (bufferIndex == bufferCount)
+            {
+                bufferCount = read4(buffer);
+                bufferIndex = 0;
+
+                if (bufferCount == 0)
+                    break;
+            }
+
+            while (written < n && bufferIndex < bufferCount)
+                buf[written++] = buffer[bufferIndex++];
+        }
+
+        return written;
+    }
+}
+```
 
 ---
+
+# Pattern Recognition Cheat Sheet
+
+Use the defining constraint or requested result to identify a likely starting pattern. Confirm it against edge cases before committing to an approach.
+
+- **Sliding window:** contiguous substring or subarray with a longest, shortest, or validity condition.
+- **Hash set or map:** fast membership checks, frequencies, or grouping by a derived key.
+- **Two pointers:** sorted data, in-place compaction, pair search, or a moving boundary.
+- **Prefix sum:** repeated range-sum queries or cumulative changes across positions.
+- **Binary search:** sorted search space or a monotonic feasibility condition.
+- **BFS:** shortest paths in an unweighted graph, level order, or minimum-step spread.
+- **DFS / backtracking:** explore connected states, enumerate choices, or build candidate paths.
+- **Topological sort:** order tasks with prerequisites; failure to process all nodes signals a cycle.
+- **Heap:** repeatedly retrieve the smallest/largest item or merge several sorted streams.
+- **Monotonic stack:** nearest greater/smaller element or a span constrained by prior values.
+- **Intervals / sweep line:** overlapping ranges or values that change at ordered endpoints.
+- **Tree DFS:** validate or aggregate information from child subtrees; pass bounds or return subtree state.
+- **Dynamic programming:** overlapping subproblems with a compact state and recurrence.
+- **Greedy:** a locally optimal choice can be justified by an exchange argument or invariant.
+- **Union-find:** dynamically connect components and answer connectivity queries.
+- **Trie:** repeated prefix queries over strings.
+- **Linked-list merge sort:** sorting linked data without random access.
+- **Quickselect:** find one rank/order statistic without sorting every element.
+- **GCD / number theory:** integer combinations or divisibility constraints.
+- **Simulation:** the state space is small or the problem directly specifies a bounded process.
+
+# Last Minute Review
+
+## Before Coding
+
+- Restate the input, output, and constraints.
+- Identify whether order, contiguity, duplicates, or in-place mutation matters.
+- Ask what the output shape implies: one optimum, all paths, a count, or a validity result.
+- Choose a simple example and include an edge case.
+
+## While Coding
+
+- State the invariant that makes the algorithm correct.
+- Define when the state changes and when a candidate answer is recorded.
+- Handle empty input, one element, duplicates, boundaries, and unreachable states.
+- For graphs, avoid revisiting nodes; for trees, clarify the meaning returned by recursion.
+- For heaps, state exactly what each heap entry represents.
+
+## Before Finishing
+
+- Dry-run the example and one edge case.
+- Derive runtime from the actual operations and data structure.
+- Account for auxiliary memory separately from output storage.
+- Check integer overflow, tie-breaking, and whether input mutation is allowed.
+- Give the interviewer the one-line summary before discussing optimizations.
+
+## Complexity Reminders
+
+- Hash-table operations are expected O(1), not guaranteed worst-case O(1).
+- A heap operation is O(log n); building a heap from n values can be O(n).
+- BFS/DFS is O(V + E) with adjacency lists.
+- Merge sort is O(n log n); recursive auxiliary space depends on the structure.
+- Quickselect is average O(n), but worst-case O(n²).
+- Include the cost of producing all requested output paths or combinations.
