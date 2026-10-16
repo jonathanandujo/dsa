@@ -24,6 +24,7 @@ For each exercise:
 - [Dynamic Programming](#dynamic-programming)
 - [Intervals](#intervals)
 - [Prefix Sum](#prefix-sum)
+- [Binary Search](#binary-search)
 - [Two Pointers](#two-pointers)
 - [Math](#math)
 - [Simulation](#simulation)
@@ -2101,6 +2102,74 @@ public class NumMatrix
             - prefix[row1][col2 + 1]
             - prefix[row2 + 1][col1]
             + prefix[row1][col1];
+    }
+}
+```
+
+---
+
+# Binary Search
+
+## 875. Koko Eating Bananas
+
+### Pattern
+
+Binary search on the answer
+
+### Recognition
+
+- Find the minimum speed that meets a time limit
+- Feasibility is monotonic: if a speed works, every faster speed works
+
+### Key Insight
+
+Binary search the eating speed from 1 to the largest pile. For each candidate speed, sum the hours needed per pile and check whether the total fits within `h`.
+
+### Complexity
+
+- Time: O(n log m), where n is the number of piles and m is the largest pile
+- Space: O(1).
+
+### Interview One-Liner
+
+Binary search the minimum feasible speed, using the total hours required at each speed as a monotonic feasibility check.
+
+### Solution
+
+```csharp
+public class Solution
+{
+    public int MinEatingSpeed(int[] piles, int h)
+    {
+        int left = 1;
+        int right = piles.Max();
+
+        while (left < right)
+        {
+            int mid = left + (right - left) / 2;
+
+            if (CanEat(mid))
+                right = mid;
+            else
+                left = mid + 1;
+        }
+
+        return left;
+
+        bool CanEat(int speed)
+        {
+            long hours = 0;
+
+            foreach (int pile in piles)
+            {
+                hours += (pile - 1L) / speed + 1;
+
+                if (hours > h)
+                    return false;
+            }
+
+            return true;
+        }
     }
 }
 ```
