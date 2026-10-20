@@ -35,6 +35,14 @@ For each exercise:
 
 ## 76. Minimum Window Substring
 
+### Problem Summary
+
+Find the shortest substring of `s` containing every character in `t`, including duplicates.
+
+Example:
+Input: `s = "ADOBECODEBANC"`, `t = "ABC"`.
+Output: `"BANC"`.
+
 ### Pattern
 
 Variable-size sliding window
@@ -60,41 +68,31 @@ Expand until all required characters are covered, then shrink the window to find
 ### Solution
 
 ```csharp
-public class Solution
-{
-    public string MinWindow(string s, string t)
-    {
-        if (s.Length < t.Length)
+public class Solution {
+    public string MinWindow(string s, string t) {
+        if(t.Length > s.Length)
             return "";
-        int[] need = new int[128];
-        foreach(char c in t)
-        {
-            need[c]++;
-        }
+        int[] store = new int[128];
         int required = t.Length;
         int left = 0;
-        int bestStart = left;
+        int bestStart = 0;
         int bestLength = int.MaxValue;
+        foreach (char c in t)
+            store[c]++;
 
         for(int right = 0; right < s.Length; right++)
         {
-            char current = s[right];
-            if(need[current] > 0)
+            if(store[s[right]]-- > 0)
                 required--;
-            need[current]--;
             while(required == 0)
             {
-                int windowLength = right - left +1;
-                if(windowLength < bestLength)
+                if(right - left + 1 < bestLength)
                 {
-                    bestLength = windowLength;
                     bestStart = left;
+                    bestLength = right - left + 1;
                 }
-                char leftChar = s[left];
-                need[leftChar]++;
-                if(need[leftChar] > 0)
+                if(store[s[left++]]++ == 0)
                     required++;
-                left++;
             }
         }
         return bestLength == int.MaxValue ? "" : s.Substring(bestStart, bestLength);
@@ -105,6 +103,14 @@ public class Solution
 ---
 
 ## 3. Longest Substring Without Repeating Characters
+
+### Problem Summary
+
+Return the length of the longest substring containing no repeated characters.
+
+Example:
+Input: `s = "abcabcbb"`.
+Output: `3`.
 
 ### Pattern
 
@@ -133,19 +139,22 @@ Keep a duplicate-free sliding window and update the maximum length as its right 
 ```csharp
 public class Solution {
     public int LengthOfLongestSubstring(string s) {
+        if(s.Length <= 1)
+            return s.Length;
+
         HashSet<char> store = new();
         int left = 0;
         int right = 0;
-        int maxLen = 0;
-        while(right < s.Length)
+        int maxLength = 0;
+        while (right < s.Length)
         {
             if(store.Add(s[right]))
                 right++;
             else
-                 store.Remove(s[left++]);
-            maxLen = Math.Max(maxLen, right - left);
+                store.Remove(s[left++]);
+            maxLength = Math.Max(maxLength, right - left);
         }
-        return maxLen;
+        return maxLength;
     }
 }
 ```
@@ -155,6 +164,14 @@ public class Solution {
 # Hashing
 
 ## 128. Longest Consecutive Sequence
+
+### Problem Summary
+
+Find the length of the longest run of consecutive values in an unsorted integer array.
+
+Example:
+Input: `nums = [100,4,200,1,3,2]`.
+Output: `4`.
 
 ### Pattern
 
@@ -210,6 +227,14 @@ public class Solution {
 # Graphs
 
 ## 994. Rotting Oranges
+
+### Problem Summary
+
+Given a grid of fresh and rotten oranges, return the minutes until no fresh orange remains, or `-1` if some cannot rot.
+
+Example:
+Input: `[[2,1,1],[1,1,0],[0,1,1]]`.
+Output: `4`.
 
 ### Pattern
 
@@ -302,6 +327,14 @@ public class Solution {
 
 ## 207. Course Schedule
 
+### Problem Summary
+
+Given courses and prerequisite pairs, determine whether all courses can be completed.
+
+Example:
+Input: `numCourses = 2`, `prerequisites = [[1,0]]`.
+Output: `true`.
+
 ### Pattern
 
 Topological sort + cycle detection
@@ -328,51 +361,39 @@ Repeatedly remove zero-indegree courses; all courses are finishable if every nod
 
 ```csharp
 public class Solution
+public class Solution
 {
     public bool CanFinish(int numCourses, int[][] prerequisites)
     {
         List<int>[] graph = new List<int>[numCourses];
-
-        for (int i = 0; i < numCourses; i++)
-            graph[i] = new List<int>();
-
         int[] indegree = new int[numCourses];
+        for(int i = 0; i< numCourses; i++)
+            graph[i] = new();
 
-        foreach (var p in prerequisites)
+        foreach(var p in prerequisites)
         {
-            int course = p[0];
-            int prereq = p[1];
-
-            graph[prereq].Add(course);
-            indegree[course]++;
+            graph[p[1]].Add(p[0]);
+            indegree[p[0]]++;
         }
 
         Queue<int> queue = new();
-
-        for (int i = 0; i < numCourses; i++)
-        {
-            if (indegree[i] == 0)
+        for(int i = 0; i< numCourses; i++)
+            if(indegree[i] == 0)
                 queue.Enqueue(i);
-        }
-
+        
         int completed = 0;
 
-        while (queue.Count > 0)
+        while(queue.Count > 0)
         {
-            int current = queue.Dequeue();
-
-            completed++;
-
-            foreach (int next in graph[current])
-            {
-                indegree[next]--;
-
-                if (indegree[next] == 0)
+            int course = queue.Dequeue();
+            foreach(int next in graph[course])
+                if(--indegree[next] == 0)
                     queue.Enqueue(next);
-            }
+            completed++;
         }
 
         return completed == numCourses;
+
     }
 }
 ```
@@ -380,6 +401,14 @@ public class Solution
 ---
 
 ## 210. Course Schedule II
+
+### Problem Summary
+
+Return an order for taking all courses that satisfies the prerequisite pairs, or an empty array if no such order exists.
+
+Example:
+Input: `numCourses = 2`, `prerequisites = [[1,0]]`.
+Output: `[0,1]`.
 
 ### Pattern
 
@@ -460,6 +489,14 @@ public class Solution
 ---
 
 ## 2101. Detonate the Maximum Bombs
+
+### Problem Summary
+
+Given bomb locations and blast radii, return the largest number of bombs that can be detonated by starting with one bomb.
+
+Example:
+Input: `bombs = [[2,1,3],[6,1,4]]`.
+Output: `2`.
 
 ### Pattern
 
@@ -559,6 +596,14 @@ public class Solution
 ---
 
 ## 126. Word Ladder II
+
+### Problem Summary
+
+Find every shortest sequence that transforms `beginWord` into `endWord` by changing one letter at a time using words from the dictionary.
+
+Example:
+Input: `beginWord = "hit"`, `endWord = "cog"`, `wordList = ["hot","dot","dog","lot","log","cog"]`.
+Output: the two shortest sequences through `dot,dog` and `lot,log`.
 
 ### Pattern
 
@@ -704,9 +749,170 @@ public class Solution
 
 ---
 
+## 200. Number of Islands
+
+### Problem Summary
+
+Count the connected groups of land cells in a grid, where cells connect horizontally or vertically.
+
+Example:
+Input: `grid = [["1","1","0"],["0","1","0"],["0","0","1"]]`.
+Output: `2`.
+
+### Pattern
+
+Grid traversal with DFS
+
+### Key Insight
+
+Visit each land cell once. When a new unvisited land cell is found, traverse its whole connected component and count one island.
+
+### Complexity
+
+- Time: O(rows × columns)
+- Space: O(rows × columns) in the worst case for the traversal stack.
+
+### Solution
+
+```csharp
+public class Solution {
+    public int NumIslands(char[][] grid) {
+        int islands = 0;
+        int[][] directions = new int[][] {
+            new int[] {0, 1},  // Right
+            new int[] {1, 0},  // Down
+            new int[] {0, -1}, // Left
+            new int[] {-1, 0}  // Up
+        };
+
+        for (int i = 0; i < grid.Length; i++) {
+            for (int j = 0; j < grid[0].Length; j++) {
+                if (grid[i][j] == '1') {
+                    ClearLand(i, j);
+                    islands++;
+                }
+            }
+        }
+
+        return islands;
+
+        void ClearLand(int i, int j) {
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+            grid[i][j] = '0';
+            stack.Push((i, j));
+
+            while (stack.Count > 0) {
+                var (currentRow, currentCol) = stack.Pop();
+
+                foreach (var dir in directions) {
+                    int newRow = currentRow + dir[0];
+                    int newCol = currentCol + dir[1];
+                    if (newRow >= 0 && newRow < grid.Length && newCol >= 0 && newCol < grid[0].Length && grid[newRow][newCol] == '1') {
+                        grid[newRow][newCol] = '0';
+                        stack.Push((newRow, newCol));
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## 684. Redundant Connection
+
+### Problem Summary
+
+Given a tree with one extra edge, return the edge whose removal restores a tree; if multiple choices exist, return the one appearing last.
+
+Example:
+Input: `edges = [[1,2],[1,3],[2,3]]`.
+Output: `[2,3]`.
+
+### Pattern
+
+Union-find (disjoint set)
+
+### Key Insight
+
+Process edges in input order. An edge joining vertices already in the same component creates a cycle, so it is the redundant connection.
+
+### Complexity
+
+- Time: O(n α(n)) for n edges
+- Space: O(n).
+
+### Solution
+
+```csharp
+public class Solution
+{
+    public int[] FindRedundantConnection(int[][] edges)
+    {
+        int n = edges.Length;
+
+        int[] parent = new int[n + 1];
+
+        for (int i = 1; i <= n; i++)
+        {
+            parent[i] = i;
+        }
+
+        foreach (int[] edge in edges)
+        {
+            int u = edge[0];
+            int v = edge[1];
+
+            if (!Union(u, v, parent))
+            {
+                return edge;
+            }
+        }
+
+        return Array.Empty<int>();
+    }
+
+    private int Find(int node, int[] parent)
+    {
+        if (parent[node] != node)
+        {
+            parent[node] = Find(parent[node], parent);
+        }
+
+        return parent[node];
+    }
+
+    private bool Union(int a, int b, int[] parent)
+    {
+        int rootA = Find(a, parent);
+        int rootB = Find(b, parent);
+
+        if (rootA == rootB)
+        {
+            return false;
+        }
+
+        parent[rootA] = rootB;
+
+        return true;
+    }
+}
+```
+
+---
+
 # Trees
 
 ## 98. Validate Binary Search Tree
+
+### Problem Summary
+
+Determine whether a binary tree satisfies the strict ordering rules of a binary search tree.
+
+Example:
+Input: `root = [2,1,3]`.
+Output: `true`.
 
 ### Pattern
 
@@ -770,6 +976,14 @@ public class Solution
 ---
 
 ## 958. Check Completeness of a Binary Tree
+
+### Problem Summary
+
+Check whether every level of a binary tree is full except possibly the last, whose nodes must be as far left as possible.
+
+Example:
+Input: `root = [1,2,3,4,5,6]`.
+Output: `true`.
 
 ### Pattern
 
@@ -843,6 +1057,14 @@ public class Solution
 ---
 
 ## 109. Convert Sorted List to Binary Search Tree
+
+### Problem Summary
+
+Convert an ascending singly linked list into a height-balanced binary search tree.
+
+Example:
+Input: `head = [-10,-3,0,5,9]`.
+Output: a height-balanced BST with those values in order.
 
 ### Pattern
 
@@ -930,6 +1152,14 @@ public class Solution
 
 ## 1008. Construct BST from Preorder Traversal
 
+### Problem Summary
+
+Build the binary search tree represented by its preorder traversal and return its root.
+
+Example:
+Input: `preorder = [8,5,1,7,10,12]`.
+Output: a BST with root `8`, left subtree rooted at `5`, and right subtree rooted at `10`.
+
 ### Pattern
 
 Preorder traversal + value bounds
@@ -985,6 +1215,14 @@ public class Solution
 
 ## 236. Lowest Common Ancestor of a Binary Tree
 
+### Problem Summary
+
+Return the lowest node in a binary tree that has both given nodes as descendants (a node may be its own descendant).
+
+Example:
+Input: `root = [3,5,1,6,2,0,8,null,null,7,4]`, `p = 5`, `q = 1`.
+Output: node `3`.
+
 ### Pattern
 
 Postorder DFS
@@ -1031,6 +1269,14 @@ public class Solution
 ---
 
 ## 124. Binary Tree Maximum Path Sum
+
+### Problem Summary
+
+Find the largest sum along any non-empty path in a binary tree; the path may start and end at any nodes.
+
+Example:
+Input: `root = [-10,9,20,null,null,15,7]`.
+Output: `42`.
 
 ### Pattern
 
@@ -1090,6 +1336,14 @@ public class Solution
 # Trie
 
 ## 208. Implement Trie
+
+### Problem Summary
+
+Design a trie supporting word insertion, exact-word search, and prefix search.
+
+Example:
+Input: Insert `"apple"`, then search `"apple"`, search `"app"`, and check prefix `"app"`.
+Output: `true`, `false`, `true`.
 
 ### Pattern
 
@@ -1161,6 +1415,14 @@ public class Trie {
 
 ## 253. Meeting Rooms II
 
+### Problem Summary
+
+Given meeting time intervals, return the minimum number of rooms needed to hold every meeting.
+
+Example:
+Input: `intervals = [[0,30],[5,10],[15,20]]`.
+Output: `2`.
+
 ### Pattern
 
 Min-heap of meeting end times
@@ -1212,6 +1474,14 @@ public class Solution
 ---
 
 ## 632. Smallest Range Covering Elements from K Lists
+
+### Problem Summary
+
+Choose the smallest range that contains at least one value from each of the sorted lists.
+
+Example:
+Input: `nums = [[4,10,15,24,26],[0,9,12,20],[5,18,22,30]]`.
+Output: `[20,24]`.
 
 ### Pattern
 
@@ -1285,6 +1555,14 @@ public class Solution
 ---
 
 ## 215. Kth Largest Element in an Array
+
+### Problem Summary
+
+Return the value that would be in position `k` when the array is sorted in descending order.
+
+Example:
+Input: `nums = [3,2,1,5,6,4]`, `k = 2`.
+Output: `5`.
 
 ### Pattern
 
@@ -1361,9 +1639,99 @@ public class Solution
 
 ---
 
+## 295. Find Median from Data Stream
+
+### Problem Summary
+
+Design a data structure that accepts numbers one at a time and returns the median of all values seen so far.
+
+Example:
+Input: Add `1`, then `2`; add `3`.
+Output: Medians are `1.5`, then `2`.
+
+### Pattern
+
+Two heaps
+
+### Key Insight
+
+Keep the lower half in a max-heap and the upper half in a min-heap. Balance their sizes so the middle value(s) are always at the heap tops.
+
+### Complexity
+
+- AddNum: O(log n)
+- FindMedian: O(1)
+- Space: O(n).
+
+### Solution
+
+```csharp
+public class MedianFinder
+{
+    private PriorityQueue<int, int> minHeap;
+    private PriorityQueue<int, int> maxHeap;
+
+    public MedianFinder()
+    {
+        minHeap = new();
+        maxHeap = new(
+            Comparer<int>.Create((a, b) => b.CompareTo(a))
+        );
+    }
+
+    public void AddNum(int num)
+    {
+        maxHeap.Enqueue(num, num);
+
+        // Maintain ordering:
+        // every value in maxHeap <= every value in minHeap
+        if (minHeap.Count > 0 && maxHeap.Peek() > minHeap.Peek())
+        {
+            int left = maxHeap.Dequeue();
+            int right = minHeap.Dequeue();
+
+            maxHeap.Enqueue(right, right);
+            minHeap.Enqueue(left, left);
+        }
+
+        // Maintain size balance
+        if (maxHeap.Count > minHeap.Count + 1)
+        {
+            int value = maxHeap.Dequeue();
+            minHeap.Enqueue(value, value);
+        }
+        else if (minHeap.Count > maxHeap.Count)
+        {
+            int value = minHeap.Dequeue();
+            maxHeap.Enqueue(value, value);
+        }
+    }
+
+    public double FindMedian()
+    {
+        if (maxHeap.Count == minHeap.Count)
+        {
+            return ((double)maxHeap.Peek() + minHeap.Peek()) / 2;
+        }
+
+        return maxHeap.Peek();
+    }
+}
+```
+
+---
+
 # Data Structure Design
 
 ## 155. Min Stack
+
+### Problem Summary
+
+Design a stack that supports push, pop, top, and retrieving its minimum value in constant time.
+
+Example:
+Input: Push `-2, 0, -3`, then call `getMin()`, pop, `top()`, and `getMin()`.
+Output: `-3`, `0`, and `-2` for the queries.
 
 ### Pattern
 
@@ -1428,6 +1796,14 @@ public class MinStack {
 ---
 
 ## 146. LRU Cache
+
+### Problem Summary
+
+Design a least-recently-used cache with a fixed capacity and constant-time `get` and `put` operations.
+
+Example:
+Input: Capacity `2`; put keys `1` and `2`, get key `1`, then put key `3` and get key `2`.
+Output: `get(1) = 1`; `get(2) = -1` after key `2` is evicted.
 
 ### Pattern
 
@@ -1514,6 +1890,14 @@ public class LRUCache
 ---
 
 ## 716. Max Stack
+
+### Problem Summary
+
+Design a stack supporting push, pop, top, and retrieving or removing the maximum value.
+
+Example:
+Input: Push `5, 1, 5`, then call `popMax()` and `top()`.
+Output: `popMax()` returns `5`; `top()` returns `1`.
 
 ### Pattern
 
@@ -1611,6 +1995,14 @@ public class MaxStack
 
 ## 981. Time Based Key-Value Store
 
+### Problem Summary
+
+Store timestamped values for keys and return the most recent value at or before a requested timestamp.
+
+Example:
+Input: Set `("foo","bar",1)`, then get `"foo"` at timestamps `1` and `0`.
+Output: `"bar"` and `""`.
+
 ### Pattern
 
 Hash map + binary search
@@ -1697,6 +2089,14 @@ public class TimeMap
 # Linked Lists
 
 ## 148. Sort List
+
+### Problem Summary
+
+Sort a singly linked list in ascending order and return its head.
+
+Example:
+Input: `head = [4,2,1,3]`.
+Output: `[1,2,3,4]`.
 
 ### Pattern
 
@@ -1792,6 +2192,14 @@ public class Solution
 
 ## 23. Merge K Sorted Lists
 
+### Problem Summary
+
+Merge `k` sorted linked lists into one sorted linked list.
+
+Example:
+Input: `[[1,4,5],[1,3,4],[2,6]]`.
+Output: `[1,1,2,3,4,4,5,6]`.
+
 ### Pattern
 
 Min-heap / priority queue
@@ -1852,6 +2260,14 @@ public class Solution
 # Backtracking
 
 ## 17. Letter Combinations of a Phone Number
+
+### Problem Summary
+
+Return all letter strings represented by a digit string using the standard phone keypad mapping.
+
+Example:
+Input: `digits = "23"`.
+Output: `["ad","ae","af","bd","be","bf","cd","ce","cf"]`.
 
 ### Pattern
 
@@ -1920,6 +2336,14 @@ public class Solution {
 
 ## 91. Decode Ways
 
+### Problem Summary
+
+Count how many ways a digit string can be decoded when `1` through `26` map to letters and leading zeroes are invalid.
+
+Example:
+Input: `s = "226"`.
+Output: `3`.
+
 ### Pattern
 
 One-dimensional DP
@@ -1980,7 +2404,57 @@ public class Solution
 
 # Intervals
 
+## 56. Merge Intervals
+
+### Problem Summary
+
+Merge all overlapping intervals and return the resulting non-overlapping intervals.
+
+Example:
+Input: `intervals = [[1,3],[2,6],[8,10],[15,18]]`.
+Output: `[[1,6],[8,10],[15,18]]`.
+
+### Pattern
+
+Sort and sweep intervals
+
+### Key Insight
+
+Sort intervals by start. Each interval either begins a new merged range or extends the last range when they overlap.
+
+### Complexity
+
+- Time: O(n log n)
+- Space: O(n) for the result.
+
+### Solution
+
+```csharp
+public class Solution {
+    public int[][] Merge(int[][] intervals) {
+        Array.Sort(intervals, (a,b) => a[0] - b[0]);
+        List<int[]> result = new();
+        foreach(int[] interval in intervals)
+        {
+            if(result.Count == 0 || result[^1][1] < interval[0])
+                result.Add(interval);
+            else
+                result[^1][1] = Math.Max(result[^1][1], interval[1]);
+        }
+        return result.ToArray();
+    }
+}
+```
+
 ## 1094. Car Pooling
+
+### Problem Summary
+
+Given passenger pickup and drop-off trips, determine whether one vehicle can complete them without exceeding capacity.
+
+Example:
+Input: `trips = [[2,1,5],[3,3,7]]`, `capacity = 4`.
+Output: `true`.
 
 ### Pattern
 
@@ -2007,32 +2481,18 @@ Record passenger-count changes at each endpoint and scan the running total to en
 ### Solution
 
 ```csharp
-public class Solution
-{
-    public bool CarPooling(int[][] trips, int capacity)
-    {
-        int[] diff = new int[1001];
-
-        foreach (var trip in trips)
+public class Solution {
+    public bool CarPooling(int[][] trips, int capacity) {
+        int[] store = new int[1001];
+        foreach(int[] trip in trips)
         {
-            int passengers = trip[0];
-            int from = trip[1];
-            int to = trip[2];
-
-            diff[from] += passengers;
-            diff[to] -= passengers;
+            store[trip[1]] += trip[0];
+            store[trip[2]] -= trip[0];
         }
-
-        int current = 0;
-
-        foreach (int change in diff)
-        {
-            current += change;
-
-            if (current > capacity)
+        int currentPax = 0;
+        foreach(int i in store)
+            if ((currentPax += i) > capacity)
                 return false;
-        }
-
         return true;
     }
 }
@@ -2043,6 +2503,14 @@ public class Solution
 # Prefix Sum
 
 ## 304. Range Sum Query 2D - Immutable
+
+### Problem Summary
+
+Preprocess an immutable matrix so each query returns the sum of values inside a specified rectangle.
+
+Example:
+Input: `matrix = [[1,2],[3,4]]`; query rows `0..1`, columns `0..1`.
+Output: `10`.
 
 ### Pattern
 
@@ -2112,6 +2580,14 @@ public class NumMatrix
 
 ## 875. Koko Eating Bananas
 
+### Problem Summary
+
+Choose the minimum integer eating speed that lets Koko finish all piles within `h` hours, eating from at most one pile per hour.
+
+Example:
+Input: `piles = [3,6,7,11]`, `h = 8`.
+Output: `4`.
+
 ### Pattern
 
 Binary search on the answer
@@ -2180,6 +2656,14 @@ public class Solution
 
 ## 443. String Compression
 
+### Problem Summary
+
+Compress consecutive repeated characters in place, writing each character and its count when the count exceeds one; return the new length.
+
+Example:
+Input: `chars = ["a","a","b","b","c","c","c"]`.
+Output: length `5`, with prefix `["a","2","b","2","c","3"]`.
+
 ### Pattern
 
 Read/write pointers
@@ -2246,6 +2730,14 @@ public class Solution
 
 ## 365. Water and Jug Problem
 
+### Problem Summary
+
+Determine whether two jugs with capacities `x` and `y` can be used to measure exactly `target` units of water.
+
+Example:
+Input: `x = 3`, `y = 5`, `target = 4`.
+Output: `true`.
+
 ### Pattern
 
 Greatest common divisor
@@ -2303,6 +2795,14 @@ public class Solution
 # Simulation
 
 ## 1298. Maximum Candies You Can Get from Boxes
+
+### Problem Summary
+
+Starting with some boxes, collect the candies in every box you can open; keys and newly discovered boxes may unlock further boxes.
+
+Example:
+Input: `status = [1,0,1,0]`, `candies = [7,5,4,100]`, `keys = [[],[],[1],[]]`, `containedBoxes = [[1,2],[3],[],[]]`, `initialBoxes = [0]`.
+Output: `16`.
 
 ### Pattern
 
@@ -2387,6 +2887,14 @@ public class Solution
 
 ## 1620. Coordinate With Maximum Network Quality
 
+### Problem Summary
+
+Find the integer coordinate with the greatest total signal from towers within a given radius; ties go to the smallest coordinate in scan order.
+
+Example:
+Input: `towers = [[1,2,5],[2,1,7],[3,1,9]]`, `radius = 2`.
+Output: `[2,1]`.
+
 ### Pattern
 
 Bounded-grid brute force
@@ -2457,6 +2965,14 @@ public class Solution
 ---
 
 ## 158. Read N Characters Given read4 II
+
+### Problem Summary
+
+Implement repeated reads of up to `n` characters from a source that returns at most four characters per `read4` call, preserving unread characters between calls.
+
+Example:
+Input: `read4` returns `"abcd"`; request `3` characters.
+Output: `3`, with `"abc"` in the output buffer.
 
 ### Pattern
 
